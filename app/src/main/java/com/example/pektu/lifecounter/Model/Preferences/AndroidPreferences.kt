@@ -1,7 +1,6 @@
 package com.example.pektu.lifecounter.Model.Preferences
 
 import android.content.SharedPreferences
-import com.example.pektu.lifecounter.Model.Model
 
 class AndroidPreferences(private val sharedPreferences: SharedPreferences): Preferences {
     override fun saveInt(tag: String, i: Int) {

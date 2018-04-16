@@ -14,7 +14,7 @@ interface Controller {
     fun onCalendarDateChanged(date: DayDate)
     fun onPlanCreatedButtonClicked(plan: Plan)
 
-    fun onPlansViewCreated(date: DayDate, plansView: PlansView)
+    fun onPlansViewCreated(plansView: PlansView)
     fun onPlansViewItemClicked(holder: PlansAdapter.ViewHolder, plan: Plan, position: Int, plansView: PlansView)
     fun onPlansViewItemLongClicked(holder: PlansAdapter.ViewHolder, plan: Plan, position: Int, plansView: PlansView)
     fun onPlansViewResumed(plansView: PlansView)
@@ -24,6 +24,8 @@ interface Controller {
     fun onFinishSetUp(sleepTimeHour: Int, sleepTimeMinute: Int, setUpView: SetUpView)
     fun onMainViewInited()
     fun onNotificationClicked(date: DayDate)
+    fun onChangeSleepTimeButtonClicked()
+    fun onSettingsButtonClick()
 
     fun getModel(): Model
 

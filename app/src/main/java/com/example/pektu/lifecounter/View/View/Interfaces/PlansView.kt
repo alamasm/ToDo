@@ -1,10 +1,12 @@
 package com.example.pektu.lifecounter.View.View.Interfaces
 
+import com.example.pektu.lifecounter.Model.DayDate
 import com.example.pektu.lifecounter.Model.Plan
 
 interface PlansView {
     fun updatePlansList(plans: Array<Plan>)
     fun showAddNewPlanActivity()
+    var date: DayDate
 
     companion object {
         val INTENT_REQUEST_CODE = "1"

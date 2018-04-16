@@ -6,4 +6,5 @@ interface MainView {
     fun showStartActivity()
     fun showDayActivity(date: DayDate, requestCode: Int)
     fun showFirstSetUpActivity()
+    fun showSettingsActivity()
 }

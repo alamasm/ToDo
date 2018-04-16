@@ -20,13 +20,13 @@ import com.example.pektu.lifecounter.Controller.Services.DoPlanNotificationSende
 import com.example.pektu.lifecounter.Controller.Services.UndonePlansNotificationSenderService
 import com.example.pektu.lifecounter.Controller.Services.plansUpdaterService
 import com.example.pektu.lifecounter.Controller.TimeManager
-import com.example.pektu.lifecounter.View.View.Fragments.MainFragment
 import com.example.pektu.lifecounter.Model.AndroidModel
 import com.example.pektu.lifecounter.Model.DB.DB
 import com.example.pektu.lifecounter.Model.DB.DBHelper
 import com.example.pektu.lifecounter.Model.DayDate
 import com.example.pektu.lifecounter.Model.Preferences.AndroidPreferences
 import com.example.pektu.lifecounter.R
+import com.example.pektu.lifecounter.View.View.Fragments.MainFragment
 import com.example.pektu.lifecounter.View.View.Interfaces.MainView
 import com.example.pektu.lifecounter.View.View.Interfaces.PlansView
 import kotlinx.android.synthetic.main.activity_main.*
@@ -74,11 +74,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun initServices() {
+        initStickyServices()
+        initAlarmManagerServices()
+    }
+
+    private fun initStickyServices() {
         val notificationSenderServiceIntent = Intent(this, DoPlanNotificationSenderService::class.java)
         val plansUpdaterServiceIntent = Intent(this, plansUpdaterService::class.java)
         startService(notificationSenderServiceIntent)
         startService(plansUpdaterServiceIntent)
+    }
 
+    private fun initAlarmManagerServices() {
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(this, UndonePlansNotificationSenderService::class.java)
         intent.action = UndonePlansNotificationSenderService.OPERATION_SEND_NOTIFICATION
@@ -86,7 +93,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         TimeManager.dayTimeGettingOut() // To init TimeManager.dayRemainingTime
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime()
                 + TimeManager.dayRemainingTime * 60 * 1000 - UndonePlansNotificationSenderService.TIME_TO_SlEEP_START_SEND_NOTIFICATIONS_MS, pendingIntent)
-        startService(intent)
     }
 
     override fun onBackPressed() {
@@ -98,17 +104,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.main, menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         when (item.itemId) {
-            R.id.action_settings -> return true
+            R.id.action_settings -> {
+                ControllerSingleton.controller.onSettingsButtonClick()
+                return true
+            }
             else -> return super.onOptionsItemSelected(item)
         }
     }
@@ -153,6 +158,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun showFirstSetUpActivity() {
         val intent = Intent(this, FirstSetUpActivity::class.java)
+        startActivity(intent)
+    }
+
+    override fun showSettingsActivity() {
+        val intent = Intent(this, SettingsActivity::class.java)
         startActivity(intent)
     }
 }

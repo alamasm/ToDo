@@ -2,7 +2,6 @@ package com.example.pektu.lifecounter.Model.DB
 
 import com.example.pektu.lifecounter.Model.DayDate
 import com.example.pektu.lifecounter.Model.Plan
-import java.util.*
 
 interface DBInterface {
     fun save(plan: String, hours: Int, minutes: Int, done: Boolean, doing: Boolean, date: DayDate,

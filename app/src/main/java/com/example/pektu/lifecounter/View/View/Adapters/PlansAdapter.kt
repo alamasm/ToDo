@@ -7,13 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.example.pektu.lifecounter.Controller.ControllerSingleton
-import com.example.pektu.lifecounter.Controller.Services.DoPlanNotificationSenderService
 import com.example.pektu.lifecounter.Controller.TimeManager
 import com.example.pektu.lifecounter.Model.Plan
 import com.example.pektu.lifecounter.R
 import com.example.pektu.lifecounter.View.View.Interfaces.PlansView
-import java.util.*
-
 class PlansAdapter(var plans: Array<Plan>, private val plansView: PlansView) :
         RecyclerView.Adapter<PlansAdapter.ViewHolder>() {
 
@@ -43,9 +40,9 @@ class PlansAdapter(var plans: Array<Plan>, private val plansView: PlansView) :
     private fun setItemColor(holder: ViewHolder) {
         val resources = holder.cardView.resources
         when {
+            holder.plan.undone -> holder.cardView.setCardBackgroundColor(resources.getColor(R.color.color_undone))
             holder.plan.done -> holder.cardView.setCardBackgroundColor(resources.getColor(R.color.color_done))
             holder.plan.doing -> holder.cardView.setCardBackgroundColor(resources.getColor(R.color.color_doing))
-            holder.plan.undone -> holder.cardView.setCardBackgroundColor(resources.getColor(R.color.color_undone))
             (holder.plan.date == ControllerSingleton.controller.getModel().getCurrentDay() && TimeManager.dayTimeGettingOut()) ->
                 holder.cardView.setCardBackgroundColor(resources.getColor(R.color.color_not_done))
         }

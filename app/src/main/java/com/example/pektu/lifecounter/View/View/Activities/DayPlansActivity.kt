@@ -1,9 +1,9 @@
 package com.example.pektu.lifecounter.View.View.Activities
 
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import com.example.pektu.lifecounter.Controller.ControllerSingleton
@@ -14,24 +14,21 @@ import com.example.pektu.lifecounter.View.View.Adapters.PlansAdapter
 import com.example.pektu.lifecounter.View.View.Interfaces.PlansView
 
 class DayPlansActivity : AppCompatActivity(), PlansView {
+    override lateinit var date: DayDate
 
     private lateinit var fab: FloatingActionButton
-    private lateinit var date: DayDate
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: PlansAdapter
     private var adapterInited = false
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_day_plans)
 
         date = DayDate(intent.getStringExtra(PlansView.INTENT_DATE))
-        //val s = intent.getStringExtra(INTENT_DATE)
-        //date = ControllerSingleton.controller.getCurrentCalendarDate()
         initComponents()
-        ControllerSingleton.controller.onPlansViewCreated(date, this)
-        title = "Plans for ${ControllerSingleton.controller.getCurrentCalendarDate().toStringForUser()}"
+        ControllerSingleton.controller.onPlansViewCreated(this)
+        title = "Plans for ${date.toStringForUser()}"
         if (intent.extras.getInt(PlansView.INTENT_REQUEST_CODE) == PlansView.REQUEST_CODE_FOR_ADD_NEW_PLAN) {
             ControllerSingleton.controller.onDayPlansActivityCreatedForAddNewPlan(this)
         }

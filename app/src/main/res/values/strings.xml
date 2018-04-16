@@ -6,8 +6,12 @@
 
     <string name="action_settings">Settings</string>
 
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="add_plan_activity_description_text">Description</string>
     <string name="first_set_up_activity_sleep_text">Select when you go to sleep typically to help us notify you about plans</string>
     <string name="add_plan_activity_edit_text_error_text">Enter plan description</string>
+    <string name="settings_activity_change_sleep_time_button_text">Change sleep time</string>
+    <string name="title_activity_main2">Main2Activity</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
 </resources>

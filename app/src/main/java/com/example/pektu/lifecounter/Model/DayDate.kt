@@ -29,7 +29,7 @@ data class DayDate(private val year: Int, private val month: Int, private val da
 
         val sdf = SimpleDateFormat("yyyy.mm.dd")
         val dayOfWeekFormat = SimpleDateFormat("EEEE", Locale.US)
-        val dayOfWeek = dayOfWeekFormat.format(sdf.parse("$year.$monthToView.${dayForSDF}"))
+        val dayOfWeek = dayOfWeekFormat.format(sdf.parse("$year.$monthToView.$dayForSDF"))
         return "$result, $dayOfWeek"
     }
 }

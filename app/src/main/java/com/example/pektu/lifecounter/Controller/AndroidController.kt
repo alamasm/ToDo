@@ -5,8 +5,8 @@ import com.example.pektu.lifecounter.Model.Model
 import com.example.pektu.lifecounter.Model.Plan
 import com.example.pektu.lifecounter.Model.Preferences.Preferences
 import com.example.pektu.lifecounter.View.View.Adapters.PlansAdapter
-import com.example.pektu.lifecounter.View.View.Interfaces.PlansView
 import com.example.pektu.lifecounter.View.View.Interfaces.MainView
+import com.example.pektu.lifecounter.View.View.Interfaces.PlansView
 import com.example.pektu.lifecounter.View.View.Interfaces.SetUpView
 
 class AndroidController(private val mainView: MainView, private val model: Model) : Controller {
@@ -30,10 +30,10 @@ class AndroidController(private val mainView: MainView, private val model: Model
         return model.getCurrentCalendarDate()
     }
 
-    override fun onPlansViewCreated(date: DayDate, plansView: PlansView) {
+    override fun onPlansViewCreated(plansView: PlansView) {
         this.plansView = plansView
         plansViewOpened = true
-        plansView.updatePlansList(model.getPlans(date).toTypedArray())
+        plansView.updatePlansList(model.getPlans(plansView.date).toTypedArray())
     }
 
     override fun onPlansViewClosed() {
@@ -41,14 +41,14 @@ class AndroidController(private val mainView: MainView, private val model: Model
     }
 
     override fun onPlansViewItemClicked(holder: PlansAdapter.ViewHolder, plan: Plan, position: Int, plansView: PlansView) {
-        if (plan.done) return
+        if (plan.done || plan.undone) return
         if (!plan.doing) {
             model.changePlan(Plan(plan.id, plan.plan, plan.timeHours, plan.timeMinutes,
                     plan.done, true, plan.date, plan.spentHours, plan.spentMinutes, plan.createDate,
                     System.currentTimeMillis()))
         } else model.changePlan(Plan(plan.id, plan.plan, plan.timeHours, plan.timeMinutes, true,
                 false, plan.date, plan.spentHours, plan.spentMinutes, plan.createDate, plan.startDoingDate))
-        plansView.updatePlansList(model.getPlans(model.getCurrentCalendarDate()).toTypedArray())
+        plansView.updatePlansList(model.getPlans(plansView.date).toTypedArray())
     }
 
     override fun onPlansViewItemLongClicked(holder: PlansAdapter.ViewHolder, plan: Plan, position: Int, plansView: PlansView) {
@@ -57,7 +57,7 @@ class AndroidController(private val mainView: MainView, private val model: Model
 
     override fun onPlansViewResumed(plansView: PlansView) {
         this.plansView = plansView
-        plansView.updatePlansList(model.getPlans(model.getCurrentCalendarDate()).toTypedArray())
+        plansView.updatePlansList(model.getPlans(plansView.date).toTypedArray())
     }
 
     override fun onAddNewPlanButtonClickedInDaysActivity(plansView: PlansView) {
@@ -85,12 +85,20 @@ class AndroidController(private val mainView: MainView, private val model: Model
         mainView.showDayActivity(date, PlansView.REQUEST_CODE_NORMAL)
     }
 
+    override fun onChangeSleepTimeButtonClicked() {
+        mainView.showFirstSetUpActivity()
+    }
+
+    override fun onSettingsButtonClick() {
+        mainView.showSettingsActivity()
+    }
+
     override fun getModel(): Model {
         return model
     }
 
     override fun updateCurrentPlansViewList() {
         if (plansViewOpened)
-            plansView.updatePlansList(model.getPlans(model.getCurrentDay()).toTypedArray())
+            plansView.updatePlansList(model.getPlans(plansView.date).toTypedArray())
     }
 }

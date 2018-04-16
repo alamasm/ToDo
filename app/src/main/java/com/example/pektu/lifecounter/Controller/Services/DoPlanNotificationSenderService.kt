@@ -8,7 +8,6 @@ import com.example.pektu.lifecounter.Controller.ControllerSingleton
 import com.example.pektu.lifecounter.Controller.TimeManager
 import com.example.pektu.lifecounter.Model.Plan
 import com.example.pektu.lifecounter.R
-import com.example.pektu.lifecounter.View.View.Activities.MainActivity
 
 class DoPlanNotificationSenderService : StickyService() {
     val model = ControllerSingleton.controller.getModel()

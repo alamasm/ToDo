@@ -35,7 +35,8 @@
             android:name=".Controller.Services.OpenPlansViewService"
             android:enabled="true" />
 
-        <activity android:name=".View.View.Activities.FirstSetUpActivity"></activity>
+        <activity android:name=".View.View.Activities.FirstSetUpActivity" />
+        <activity android:name=".View.View.Activities.SettingsActivity" />
     </application>
 
 </manifest>

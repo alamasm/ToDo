@@ -1,7 +1,4 @@
 package com.example.pektu.lifecounter.Model
-
-import com.example.pektu.lifecounter.Controller.ControllerSingleton
-import com.example.pektu.lifecounter.Controller.Services.DoPlanNotificationSenderService
 import com.example.pektu.lifecounter.Controller.TimeManager
 import com.example.pektu.lifecounter.Model.DB.DB
 import com.example.pektu.lifecounter.Model.Preferences.Preferences
@@ -148,12 +145,12 @@ class AndroidModel(private val DB: DB, private val preferences: Preferences) : M
 
     private fun getSummaryPlansTimeInMinutes(plans: List<Plan>): Int {
         var s = 0
-        for (plan in plans) {
-            if (plan.done) continue
-            s += plan.timeHours * 60
-            s += plan.timeMinutes
-            s -= plan.spentMinutes
-            s -= plan.spentHours * 60
+        for ((_, _, timeHours, timeMinutes, done, _, _, spentHours, spentMinutes) in plans) {
+            if (done) continue
+            s += timeHours * 60
+            s += timeMinutes
+            s -= spentMinutes
+            s -= spentHours * 60
         }
         return s
     }

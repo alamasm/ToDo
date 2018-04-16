@@ -1,7 +1,6 @@
 package com.example.pektu.lifecounter.Controller.Services
 
 import android.app.IntentService
-import android.app.Notification
 import android.app.PendingIntent
 import android.content.Intent
 import android.os.Handler
@@ -12,7 +11,6 @@ import com.example.pektu.lifecounter.Controller.ControllerSingleton
 import com.example.pektu.lifecounter.Model.DayDate
 import com.example.pektu.lifecounter.Model.Plan
 import com.example.pektu.lifecounter.R
-import com.example.pektu.lifecounter.View.View.Activities.MainActivity
 import java.util.*
 
 class UndonePlansNotificationSenderService : IntentService("UndonePlansNotificationSenderService") {
@@ -20,7 +18,6 @@ class UndonePlansNotificationSenderService : IntentService("UndonePlansNotificat
     companion object {
         val TIME_TO_SlEEP_START_SEND_NOTIFICATIONS_MS = 60 * 2000
 
-        val OPERATION_ID = "OPERATION_ID"
         val PLAN_ID = "PLAN_ID"
         val OPERATION_SEND_NOTIFICATION = "SENT_NOTIFICATION"
         val OPERATION_ADD_TO_NEXT_DAY = "ADD_TO_NEXT_DAY"

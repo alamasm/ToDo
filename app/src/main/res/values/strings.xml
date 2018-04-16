@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Life Counter</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="add_plan_activity_description_text">Description</string>
+    <string name="first_set_up_activity_sleep_text">Select when you go to sleep typically to help us notify you about plans</string>
+    <string name="add_plan_activity_edit_text_error_text">Enter plan description</string>
+</resources>

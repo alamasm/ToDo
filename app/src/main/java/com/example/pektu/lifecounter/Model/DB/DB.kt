@@ -21,6 +21,7 @@ class DB(private val db: SQLiteDatabase) : DBInterface {
         do {
             plans.add(getPlan(c))
         } while (c.moveToNext())
+        c.close()
         return plans
     }
 
@@ -38,20 +39,32 @@ class DB(private val db: SQLiteDatabase) : DBInterface {
         val startDoingDate = c.getLong(c.getColumnIndex("start_doing_date"))
         val lastNotificationTime = c.getLong(c.getColumnIndex("last_notification_time"))
         val undone = c.getInt(c.getColumnIndex("undone")) == 1
+        val moved = c.getInt(c.getColumnIndex("moved")) == 1
+        val newPlanId = c.getInt(c.getColumnIndex("new_plan_id"))
+        val spentTimeBeforeMove = c.getInt(c.getColumnIndex("spent_time_before_move"))
 
         return Plan(id, plan, hours, minutes, done, doing, date, spentHours, spentMinutes, createDate,
-                startDoingDate, lastNotificationTime, undone)
+                startDoingDate, lastNotificationTime, undone, moved, newPlanId, spentTimeBeforeMove)
     }
 
-    override fun save(plan: String, hours: Int, minutes: Int, done: Boolean, doing: Boolean,
-                      date: DayDate, spentHours: Int, spentMinutes: Int, createDate: Long, startDoingDate: Long) {
+    override fun savePlan(plan: String, hours: Int, minutes: Int, done: Boolean, doing: Boolean,
+                          date: DayDate, spentHours: Int, spentMinutes: Int, createDate: Long, startDoingDate: Long, spentTimeBeforeMove: Int): Int {
         db.insert(DBHelper.TABLE_NAME, null, getContentValues(plan, hours, minutes,
-                done, doing, date, spentHours, spentMinutes, createDate, startDoingDate))
+                done, doing, date, spentHours, spentMinutes, createDate, startDoingDate, spentTimeBeforeMove))
+        return getLastPlanId()
+    }
+
+    private fun getLastPlanId(): Int {
+        val cursor = db.rawQuery("SELECT * FROM ${DBHelper.TABLE_NAME} ORDER BY id DESC LIMIT 1", null)
+        if (!cursor.moveToFirst()) return -1
+        val lastPlanId = cursor.getInt(cursor.getColumnIndex("id"))
+        cursor.close()
+        return lastPlanId
     }
 
     private fun getContentValues(plan: String, hours: Int, minutes: Int, done: Boolean, doing: Boolean,
                                  date: DayDate, spentHours: Int, spentMinutes: Int,
-                                 createDate: Long, startDoingDate: Long): ContentValues {
+                                 createDate: Long, startDoingDate: Long, spentTimeBeforeMove: Int = 0): ContentValues {
         val cv = ContentValues()
         cv.put("plan", plan)
         cv.put("hours", hours)
@@ -63,6 +76,7 @@ class DB(private val db: SQLiteDatabase) : DBInterface {
         cv.put("spent_minutes", spentMinutes)
         cv.put("create_date", createDate)
         cv.put("start_doing_date", startDoingDate)
+        cv.put("spent_time_before_move", spentTimeBeforeMove)
         return cv
     }
 
@@ -76,6 +90,13 @@ class DB(private val db: SQLiteDatabase) : DBInterface {
         val cv = ContentValues()
         cv.put("doing", 1)
         db.update(DBHelper.TABLE_NAME, cv, "id = ?", listOf(id.toString()).toTypedArray())
+    }
+
+    override fun setPlanMoved(planId: Int, newPlanId: Int) {
+        val cv = ContentValues()
+        cv.put("new_plan_id", newPlanId)
+        cv.put("moved", 1)
+        db.update(DBHelper.TABLE_NAME, cv, "id = ?", listOf(planId.toString()).toTypedArray())
     }
 
     override fun remove(id: Int) {

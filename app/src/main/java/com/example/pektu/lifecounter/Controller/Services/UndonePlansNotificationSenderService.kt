@@ -8,10 +8,8 @@ import android.os.Looper
 import android.support.v4.app.NotificationCompat
 import android.support.v4.app.NotificationManagerCompat
 import com.example.pektu.lifecounter.Controller.ControllerSingleton
-import com.example.pektu.lifecounter.Model.DayDate
 import com.example.pektu.lifecounter.Model.Plan
 import com.example.pektu.lifecounter.R
-import java.util.*
 
 class UndonePlansNotificationSenderService : IntentService("UndonePlansNotificationSenderService") {
 
@@ -81,13 +79,14 @@ class UndonePlansNotificationSenderService : IntentService("UndonePlansNotificat
     }
 
     private fun addToNextDay(planId: Int) {
-        val plan = ControllerSingleton.controller.getModel().getPlan(planId)
+        /*val plan = ControllerSingleton.controller.getModel().getPlan(planId)
         val calendar = Calendar.getInstance()
         calendar.time = Date()
         calendar.add(Calendar.DATE, 1)
         val nextDayDate = DayDate(calendar)
         val newPlan = Plan(0, plan.plan, plan.timeHours, plan.timeMinutes, false, false, nextDayDate, 0, 0)
-        ControllerSingleton.controller.getModel().addPlan(newPlan)
+        ControllerSingleton.controller.getModel().addPlan(newPlan)*/
+        ControllerSingleton.controller.getModel().movePlanToNextDay(planId)
         cancelNotification(planId + 1)
     }
 

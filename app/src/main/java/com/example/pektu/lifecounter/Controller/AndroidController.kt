@@ -41,6 +41,10 @@ class AndroidController(private val mainView: MainView, private val model: Model
     }
 
     override fun onPlansViewItemClicked(holder: PlansAdapter.ViewHolder, plan: Plan, position: Int, plansView: PlansView) {
+        if (plan.moved) {
+            val newPlan = model.getPlan(plan.newPlanId)
+            mainView.showDayActivity(newPlan.date, PlansView.REQUEST_CODE_NORMAL)
+        }
         if (plan.done || plan.undone) return
         if (!plan.doing) {
             model.changePlan(Plan(plan.id, plan.plan, plan.timeHours, plan.timeMinutes,

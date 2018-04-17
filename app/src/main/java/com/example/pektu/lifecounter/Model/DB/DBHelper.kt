@@ -9,11 +9,12 @@ class DBHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, CURR
     companion object {
         val TABLE_NAME = "plans"
         val ALL_COLUMNS = listOf("id", "plan", "hours", "minutes", "done", "date", "doing", "spent_hours",
-                "spent_minutes", "create_date", "start_doing_date", "last_notification_time", "undone").toTypedArray()
+                "spent_minutes", "create_date", "start_doing_date", "last_notification_time", "undone", "moved", "new_plan_id", "spent_time_before_move").toTypedArray()
         private val DB_NAME = "plans_database"
         private val CREATE_DB_SQL = "CREATE TABLE $TABLE_NAME ( id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "plan TEXT, hours INTEGER, minutes INTEGER, done INTEGER, date TEXT, doing INTEGER, spent_hours INTEGER, " +
-                "spent_minutes INTEGER, create_date INTEGER, start_doing_date INTEGER, last_notification_time INTEGER, undone INTEGER);"
+                "spent_minutes INTEGER, create_date INTEGER, start_doing_date INTEGER, last_notification_time INTEGER, undone INTEGER, " +
+                "moved INTEGER, new_plan_id INTEGER, spent_time_before_move INTEGER);"
         private val CURRENT_VERSION = 1
     }
 

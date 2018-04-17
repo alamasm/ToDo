@@ -41,6 +41,7 @@ class PlansAdapter(var plans: Array<Plan>, private val plansView: PlansView) :
         val resources = holder.cardView.resources
         when {
             holder.plan.undone -> holder.cardView.setCardBackgroundColor(resources.getColor(R.color.color_undone))
+            holder.plan.moved -> holder.cardView.setCardBackgroundColor(resources.getColor(R.color.color_moved))
             holder.plan.done -> holder.cardView.setCardBackgroundColor(resources.getColor(R.color.color_done))
             holder.plan.doing -> holder.cardView.setCardBackgroundColor(resources.getColor(R.color.color_doing))
             (holder.plan.date == ControllerSingleton.controller.getModel().getCurrentDay() && TimeManager.dayTimeGettingOut()) ->

@@ -1,4 +1,5 @@
 package com.example.pektu.lifecounter.Model
+
 import com.example.pektu.lifecounter.Controller.TimeManager
 import com.example.pektu.lifecounter.Model.DB.DB
 import com.example.pektu.lifecounter.Model.Preferences.Preferences
@@ -29,11 +30,11 @@ class AndroidModel(private val DB: DB, private val preferences: Preferences) : M
         return DayDate(calendar)
     }
 
-    override fun addPlan(plan: Plan): Boolean {
-        DB.save(plan.plan, plan.timeHours, plan.timeMinutes, plan.done, plan.doing, plan.date,
-                plan.spentHours, plan.spentMinutes, plan.createDate, plan.startDoingDate)
+    override fun addPlan(plan: Plan): Int {
+        val planId = DB.savePlan(plan.plan, plan.timeHours, plan.timeMinutes, plan.done, plan.doing, plan.date,
+                plan.spentHours, plan.spentMinutes, plan.createDate, plan.startDoingDate, plan.spentTimeBeforeMoving)
         if (plan.date == currentDate) updateBuffer()
-        return true
+        return planId
     }
 
     override fun changePlan(plan: Plan): Boolean {
@@ -70,6 +71,27 @@ class AndroidModel(private val DB: DB, private val preferences: Preferences) : M
 
     override fun getUndonePlans(date: DayDate): List<Plan> {
         return getPlans(date).filter { !it.done && !it.undone }
+    }
+
+    override fun movePlanToNextDay(planId: Int): Boolean {
+        val plan = getPlan(planId)
+        val nextDayDate = getNextDayDate()
+        val newPlan = Plan(-1, plan.plan, plan.timeHours, plan.timeMinutes, false, false,
+                nextDayDate, 0, 0, plan.createDate, 0, 0,
+                false, false, -1, plan.spentHours * 60 + plan.spentMinutes)
+        val newPlanId = addPlan(newPlan)
+        DB.setPlanMoved(plan.id, newPlanId)
+        return true
+    }
+
+    private fun getNextDayDate(): DayDate {
+        val calendar = Calendar.getInstance()
+        val currentDayDate = getCurrentDayDate()
+        calendar.set(Calendar.YEAR, currentDayDate.year)
+        calendar.set(Calendar.MONTH, currentDayDate.month)
+        calendar.set(Calendar.DAY_OF_MONTH, currentDayDate.day)
+        calendar.add(Calendar.DATE, 1)
+        return DayDate(calendar)
     }
 
     override fun saveSleepTime(hour: Int, minutes: Int): Boolean {

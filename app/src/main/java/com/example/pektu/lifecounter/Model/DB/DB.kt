@@ -9,13 +9,13 @@ import java.util.*
 
 class DB(private val db: SQLiteDatabase) : DBInterface {
     override fun getPlan(id: Int): Plan {
-        val c = db.query(DBHelper.TABLE_NAME, DBHelper.ALL_COLUMNS, "id = ?", listOf(id.toString()).toTypedArray(), null, null, "id")
+        val c = db.query(DBHelper.PLANS_TABLE_NAME, DBHelper.ALL_COLUMNS, "id = ?", listOf(id.toString()).toTypedArray(), null, null, "id")
         c.moveToFirst()
         return getPlan(c)
     }
 
     override fun getPlans(date: DayDate): List<Plan> {
-        val c = db.query(DBHelper.TABLE_NAME, DBHelper.ALL_COLUMNS, "date LIKE '$date'", null, null, null, "id")
+        val c = db.query(DBHelper.PLANS_TABLE_NAME, DBHelper.ALL_COLUMNS, "date LIKE '$date'", null, null, null, "id")
         if (!c.moveToFirst()) return emptyList()
         val plans = ArrayList<Plan>()
         do {
@@ -49,13 +49,13 @@ class DB(private val db: SQLiteDatabase) : DBInterface {
 
     override fun savePlan(plan: String, hours: Int, minutes: Int, done: Boolean, doing: Boolean,
                           date: DayDate, spentHours: Int, spentMinutes: Int, createDate: Long, startDoingDate: Long, spentTimeBeforeMove: Int): Int {
-        db.insert(DBHelper.TABLE_NAME, null, getContentValues(plan, hours, minutes,
+        db.insert(DBHelper.PLANS_TABLE_NAME, null, getContentValues(plan, hours, minutes,
                 done, doing, date, spentHours, spentMinutes, createDate, startDoingDate, spentTimeBeforeMove))
         return getLastPlanId()
     }
 
     private fun getLastPlanId(): Int {
-        val cursor = db.rawQuery("SELECT * FROM ${DBHelper.TABLE_NAME} ORDER BY id DESC LIMIT 1", null)
+        val cursor = db.rawQuery("SELECT * FROM ${DBHelper.PLANS_TABLE_NAME} ORDER BY id DESC LIMIT 1", null)
         if (!cursor.moveToFirst()) return -1
         val lastPlanId = cursor.getInt(cursor.getColumnIndex("id"))
         cursor.close()
@@ -83,42 +83,49 @@ class DB(private val db: SQLiteDatabase) : DBInterface {
     override fun setDone(id: Int) {
         val cv = ContentValues()
         cv.put("done", 1)
-        db.update(DBHelper.TABLE_NAME, cv, "id = ?", listOf(id.toString()).toTypedArray())
+        db.update(DBHelper.PLANS_TABLE_NAME, cv, "id = ?", listOf(id.toString()).toTypedArray())
     }
 
     override fun setDoing(id: Int) {
         val cv = ContentValues()
         cv.put("doing", 1)
-        db.update(DBHelper.TABLE_NAME, cv, "id = ?", listOf(id.toString()).toTypedArray())
+        db.update(DBHelper.PLANS_TABLE_NAME, cv, "id = ?", listOf(id.toString()).toTypedArray())
     }
 
     override fun setPlanMoved(planId: Int, newPlanId: Int) {
         val cv = ContentValues()
         cv.put("new_plan_id", newPlanId)
         cv.put("moved", 1)
-        db.update(DBHelper.TABLE_NAME, cv, "id = ?", listOf(planId.toString()).toTypedArray())
+        db.update(DBHelper.PLANS_TABLE_NAME, cv, "id = ?", listOf(planId.toString()).toTypedArray())
     }
 
     override fun remove(id: Int) {
-        db.delete(DBHelper.TABLE_NAME, "id = ?", listOf(id.toString()).toTypedArray())
+        db.delete(DBHelper.PLANS_TABLE_NAME, "id = ?", listOf(id.toString()).toTypedArray())
     }
 
     override fun update(id: Int, plan: String, hours: Int, minutes: Int, done: Boolean, doing: Boolean,
                         date: DayDate, spentHours: Int, spentMinutes: Int, createDate: Long, startDoingDate: Long) {
         val cv = getContentValues(plan, hours, minutes, done, doing, date, spentHours, spentMinutes, createDate, startDoingDate)
 
-        db.update(DBHelper.TABLE_NAME, cv, "id = $id", null)
+        db.update(DBHelper.PLANS_TABLE_NAME, cv, "id = $id", null)
     }
 
     override fun setLastNotificationTime(id: Int, lastNotificationTime: Long) {
         val cv = ContentValues()
         cv.put("last_notification_time", lastNotificationTime)
-        db.update(DBHelper.TABLE_NAME, cv, "id = $id", null)
+        db.update(DBHelper.PLANS_TABLE_NAME, cv, "id = $id", null)
     }
 
     override fun setUndone(id: Int) {
         val cv = ContentValues()
         cv.put("undone", 1)
-        db.update(DBHelper.TABLE_NAME, cv, "id = $id", null)
+        db.update(DBHelper.PLANS_TABLE_NAME, cv, "id = $id", null)
+    }
+
+    override fun setDayRating(date: DayDate, good: Boolean) {
+        val contentValues = ContentValues()
+        contentValues.put("date", date.toString())
+        contentValues.put("good", if (good) 1 else 0)
+        db.insert(DBHelper.DAYS_RATING_TABLE_NAME, null, contentValues)
     }
 }

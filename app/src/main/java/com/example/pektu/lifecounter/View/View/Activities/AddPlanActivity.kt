@@ -1,8 +1,8 @@
 package com.example.pektu.lifecounter.View.View.Activities
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
+import android.support.v7.app.AppCompatActivity
 import android.view.KeyEvent
 import android.widget.EditText
 import android.widget.TimePicker

@@ -14,16 +14,14 @@ import com.example.pektu.lifecounter.R
 class UndonePlansNotificationSenderService : IntentService("UndonePlansNotificationSenderService") {
 
     companion object {
-        val TIME_TO_SlEEP_START_SEND_NOTIFICATIONS_MS = 60 * 2000
+        const val TIME_TO_SlEEP_START_SEND_NOTIFICATIONS_MS = 60 * 2000
 
-        val PLAN_ID = "PLAN_ID"
-        val OPERATION_SEND_NOTIFICATION = "SENT_NOTIFICATION"
-        val OPERATION_ADD_TO_NEXT_DAY = "ADD_TO_NEXT_DAY"
-        val OPERATION_MARK_UNDONE = "MARK_UNDONE"
-    }
+        const val PLAN_ID = "PLAN_ID"
+        const val OPERATION_SEND_NOTIFICATION = "SENT_NOTIFICATION"
+        const val OPERATION_ADD_TO_NEXT_DAY = "ADD_TO_NEXT_DAY"
+        const val OPERATION_MARK_UNDONE = "MARK_UNDONE"
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        return super.onStartCommand(intent, flags, startId)
+        const val PLAN_ID_TO_NOTIFICATION_ID_DELTA = 2
     }
 
     override fun onHandleIntent(intent: Intent?) {
@@ -69,25 +67,18 @@ class UndonePlansNotificationSenderService : IntentService("UndonePlansNotificat
 
         notificationBuilder.addAction(R.drawable.ic_arrow_forward_white_24px, "Add to next day", addToNextDayPendingIntent)
         notificationBuilder.addAction(R.drawable.ic_clear_white_24px, "Mark undone", markUndonePendingIntent)
-        NotificationManagerCompat.from(this).notify(plan.id + 1, notificationBuilder.build())
+        NotificationManagerCompat.from(this).notify(plan.id + PLAN_ID_TO_NOTIFICATION_ID_DELTA, notificationBuilder.build())
     }
 
     private fun markUndone(planId: Int) {
         ControllerSingleton.controller.getModel().markUndone(planId)
-        cancelNotification(planId + 1)
+        cancelNotification(planId + PLAN_ID_TO_NOTIFICATION_ID_DELTA)
         Handler(Looper.getMainLooper()).post({ ControllerSingleton.controller.updateCurrentPlansViewList() })
     }
 
     private fun addToNextDay(planId: Int) {
-        /*val plan = ControllerSingleton.controller.getModel().getPlan(planId)
-        val calendar = Calendar.getInstance()
-        calendar.time = Date()
-        calendar.add(Calendar.DATE, 1)
-        val nextDayDate = DayDate(calendar)
-        val newPlan = Plan(0, plan.plan, plan.timeHours, plan.timeMinutes, false, false, nextDayDate, 0, 0)
-        ControllerSingleton.controller.getModel().addPlan(newPlan)*/
         ControllerSingleton.controller.getModel().movePlanToNextDay(planId)
-        cancelNotification(planId + 1)
+        cancelNotification(planId + PLAN_ID_TO_NOTIFICATION_ID_DELTA)
     }
 
     private fun cancelNotification(id: Int) {

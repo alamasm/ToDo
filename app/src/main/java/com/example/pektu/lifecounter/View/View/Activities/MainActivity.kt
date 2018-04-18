@@ -16,9 +16,10 @@ import android.view.Menu
 import android.view.MenuItem
 import com.example.pektu.lifecounter.Controller.AndroidController
 import com.example.pektu.lifecounter.Controller.ControllerSingleton
+import com.example.pektu.lifecounter.Controller.Services.DayRateService
 import com.example.pektu.lifecounter.Controller.Services.DoPlanNotificationSenderService
+import com.example.pektu.lifecounter.Controller.Services.PlansUpdaterService
 import com.example.pektu.lifecounter.Controller.Services.UndonePlansNotificationSenderService
-import com.example.pektu.lifecounter.Controller.Services.plansUpdaterService
 import com.example.pektu.lifecounter.Controller.TimeManager
 import com.example.pektu.lifecounter.Model.AndroidModel
 import com.example.pektu.lifecounter.Model.DB.DB
@@ -80,19 +81,34 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun initStickyServices() {
         val notificationSenderServiceIntent = Intent(this, DoPlanNotificationSenderService::class.java)
-        val plansUpdaterServiceIntent = Intent(this, plansUpdaterService::class.java)
+        val plansUpdaterServiceIntent = Intent(this, PlansUpdaterService::class.java)
         startService(notificationSenderServiceIntent)
         startService(plansUpdaterServiceIntent)
     }
 
     private fun initAlarmManagerServices() {
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        initUndonePlansNotificationSenderService(alarmManager)
+        initRateDayService(alarmManager)
+    }
+
+    private fun initUndonePlansNotificationSenderService(alarmManager: AlarmManager) {
         val intent = Intent(this, UndonePlansNotificationSenderService::class.java)
         intent.action = UndonePlansNotificationSenderService.OPERATION_SEND_NOTIFICATION
-        val pendingIntent = PendingIntent.getService(this, 0, intent, 0)
+        val pendingIntent = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
         TimeManager.dayTimeGettingOut() // To init TimeManager.dayRemainingTime
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime()
                 + TimeManager.dayRemainingTime * 60 * 1000 - UndonePlansNotificationSenderService.TIME_TO_SlEEP_START_SEND_NOTIFICATIONS_MS, pendingIntent)
+    }
+
+    private fun initRateDayService(alarmManager: AlarmManager) {
+        val intent = Intent(this, DayRateService::class.java)
+        intent.action = DayRateService.INTENT_ACTION_SEND_NOTIFICATION
+        intent.putExtra(DayRateService.INTENT_DATE_EXTRA_NAME, ControllerSingleton.controller.getModel().getCurrentDay().toString())
+        val pendingIntent = PendingIntent.getService(this, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        TimeManager.dayTimeGettingOut()
+        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime()
+                + TimeManager.dayRemainingTime * 60 * 1000 - DayRateService.TIME_TO_START_SEND_NOTIFICATION_DELTA_MS, pendingIntent)
     }
 
     override fun onBackPressed() {
@@ -120,26 +136,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         // Handle navigation view item clicks here.
-        when (item.itemId) {
-            R.id.nav_camera -> {
-                // Handle the camera action
-            }
-            R.id.nav_gallery -> {
 
-            }
-            R.id.nav_slideshow -> {
-
-            }
-            R.id.nav_manage -> {
-
-            }
-            R.id.nav_share -> {
-
-            }
-            R.id.nav_send -> {
-
-            }
-        }
 
         drawer_layout.closeDrawer(GravityCompat.START)
         return true

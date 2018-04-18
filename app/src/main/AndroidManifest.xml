@@ -26,13 +26,16 @@
             android:name=".Controller.Services.DoPlanNotificationSenderService"
             android:enabled="true" />
         <service
-            android:name=".Controller.Services.plansUpdaterService"
+            android:name=".Controller.Services.PlansUpdaterService"
             android:enabled="true" />
         <service
             android:name=".Controller.Services.UndonePlansNotificationSenderService"
             android:enabled="true" />
         <service
             android:name=".Controller.Services.OpenPlansViewService"
+            android:enabled="true" />
+        <service
+            android:name=".Controller.Services.DayRateService"
             android:enabled="true" />
 
         <activity android:name=".View.View.Activities.FirstSetUpActivity" />

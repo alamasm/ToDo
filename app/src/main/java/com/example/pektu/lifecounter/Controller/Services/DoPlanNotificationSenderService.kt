@@ -13,9 +13,9 @@ class DoPlanNotificationSenderService : StickyService() {
     val model = ControllerSingleton.controller.getModel()
 
     companion object {
-        val SEND_NOTIFICATION_DELTA_MS = 1000L //10 minutes
-        val START_SEND_NOTIFICATION_TIME_DELTA_MINUTES = 30
-        val NOTIFICATION_ID = 0
+        const val SEND_NOTIFICATION_DELTA_MS = 1000L //10 minutes
+        const val START_SEND_NOTIFICATION_TIME_DELTA_MINUTES = 30
+        const val NOTIFICATION_ID = 1
     }
 
     override fun loop() {

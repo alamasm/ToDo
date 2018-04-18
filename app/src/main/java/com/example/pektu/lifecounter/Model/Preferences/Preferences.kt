@@ -2,9 +2,9 @@ package com.example.pektu.lifecounter.Model.Preferences
 
 interface Preferences {
     companion object {
-        val INT_IN_PREFS_DEFAULT_VALUE = -1
-        val STRING_IN_PREFS_DEFAULT_VALUE = "-1"
-        val BOOL_IN_PREFS_DEFAULT_VALUE = false
+        const val INT_IN_PREFS_DEFAULT_VALUE = -1
+        const val STRING_IN_PREFS_DEFAULT_VALUE = "-1"
+        const val BOOL_IN_PREFS_DEFAULT_VALUE = false
     }
 
     fun saveInt(tag: String, i: Int)

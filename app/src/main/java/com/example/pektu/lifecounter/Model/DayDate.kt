@@ -4,8 +4,6 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 data class DayDate(val year: Int, val month: Int, val day: Int) {
-
-    //constructor(date: Date) : this(date.year, date.month, date.day)
     constructor(calendar: Calendar) : this(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH))
     constructor(s: String) : this(s.split(":")[0].toInt(), s.split(":")[1].toInt(), s.split(":")[2].toInt())
     constructor(): this(getCurrentCalendar())

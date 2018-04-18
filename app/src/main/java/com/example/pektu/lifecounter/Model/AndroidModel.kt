@@ -176,4 +176,8 @@ class AndroidModel(private val DB: DB, private val preferences: Preferences) : M
         }
         return s
     }
+
+    override fun rateDay(date: DayDate, good: Boolean) {
+        DB.setDayRating(date, good)
+    }
 }

@@ -5,7 +5,7 @@ import android.os.Looper
 import com.example.pektu.lifecounter.Controller.ControllerSingleton
 import java.util.concurrent.TimeUnit
 
-class plansUpdaterService : StickyService() {
+class PlansUpdaterService : StickyService() {
     private val controller = ControllerSingleton.controller
     private val model = controller.getModel()
 

@@ -7,7 +7,7 @@ import com.example.pektu.lifecounter.Model.DayDate
 
 class OpenPlansViewService: IntentService("OpenPlansViewService") {
     companion object {
-        val INTENT_DATE = "0"
+        const val INTENT_DATE = "0"
     }
     override fun onHandleIntent(intent: Intent?) {
         if (intent == null) return

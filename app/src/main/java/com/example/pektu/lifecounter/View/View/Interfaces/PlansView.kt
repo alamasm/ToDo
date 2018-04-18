@@ -9,9 +9,9 @@ interface PlansView {
     var date: DayDate
 
     companion object {
-        val INTENT_REQUEST_CODE = "1"
-        val INTENT_DATE = "2"
-        val REQUEST_CODE_FOR_ADD_NEW_PLAN = 1
-        val REQUEST_CODE_NORMAL = 0
+        const val INTENT_REQUEST_CODE = "1"
+        const val INTENT_DATE = "2"
+        const val REQUEST_CODE_FOR_ADD_NEW_PLAN = 1
+        const val REQUEST_CODE_NORMAL = 0
     }
 }

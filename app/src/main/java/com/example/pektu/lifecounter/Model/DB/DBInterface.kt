@@ -17,4 +17,6 @@ interface DBInterface {
 
     fun setLastNotificationTime(id: Int, lastNotificationTime: Long)
     fun setUndone(id: Int)
+
+    fun setDayRating(date: DayDate, good: Boolean)
 }

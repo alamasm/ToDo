@@ -25,4 +25,6 @@ interface Model {
     fun updateBuffer()
 
     fun getSummaryPlansTimeForDate(date: DayDate): Int
+
+    fun rateDay(date: DayDate, good: Boolean)
 }

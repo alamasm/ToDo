@@ -22,7 +22,8 @@ class PlansUpdaterService : StickyService() {
                 model.setPlanSpentTime(plan, spentHours, spentMinutes)
             }
             model.updateBuffer()
-            Handler(Looper.getMainLooper()).post({ controller.updateCurrentPlansViewList() })
+            if (controller.getCurrentCalendarDate() == model.getCurrentDay())
+                Handler(Looper.getMainLooper()).post({ controller.updateCurrentPlansViewList() })
             sleep(60000) // 1 minute
         }
     }

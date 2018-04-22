@@ -6,6 +6,7 @@ import android.support.design.widget.FloatingActionButton
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.view.MenuItem
 import com.example.pektu.lifecounter.Controller.ControllerSingleton
 import com.example.pektu.lifecounter.Model.DayDate
 import com.example.pektu.lifecounter.Model.Plan
@@ -20,6 +21,11 @@ class DayPlansActivity : AppCompatActivity(), PlansView {
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: PlansAdapter
     private var adapterInited = false
+
+    companion object {
+        const val CONTEXT_MENU_CHANGE_BUTTON_ID = 0
+        const val CONTEXT_MENU_REMOVE_BUTTON_ID = 1
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,11 +49,32 @@ class DayPlansActivity : AppCompatActivity(), PlansView {
 
         val linearLayoutManager = LinearLayoutManager(this)
         recyclerView.layoutManager = linearLayoutManager
+        registerForContextMenu(recyclerView)
+    }
+
+    override fun onContextItemSelected(item: MenuItem?): Boolean {
+        if (item == null) return false
+        when (item.itemId) {
+            CONTEXT_MENU_REMOVE_BUTTON_ID -> ControllerSingleton.controller.onRemovePlanContextMenuButtonClicked(adapter.currentLongClickPlan)
+            CONTEXT_MENU_CHANGE_BUTTON_ID -> ControllerSingleton.controller.onChangePlanContextMenuButtonClicked(adapter.currentLongClickPlan)
+        }
+        return true
     }
 
     override fun showAddNewPlanActivity() {
-        val intent = Intent(this, AddPlanActivity::class.java)
+        val intent = Intent(this, PlanEditorActivity::class.java)
         intent.putExtra(PlansView.INTENT_DATE, date.toString())
+        intent.action = PlanEditorActivity.INTENT_ACTION_ADD_NEW_PLAN
+        startActivity(intent)
+    }
+
+    override fun showChangePlanActivity(planDescription: String, planTimeHours: Int, planTimeMinutes: Int) {
+        val intent = Intent(this, PlanEditorActivity::class.java)
+        intent.putExtra(PlansView.INTENT_DATE, date.toString())
+        intent.action = PlanEditorActivity.INTENT_ACTION_CHANGE_PLAN
+        intent.putExtra(PlanEditorActivity.INTENT_PLAN_DESCRIPTION, planDescription)
+        intent.putExtra(PlanEditorActivity.INTENT_PLAN_TIME_HOURS, planTimeHours)
+        intent.putExtra(PlanEditorActivity.INTENT_PLAN_TIME_MINUTES, planTimeMinutes)
         startActivity(intent)
     }
 
@@ -62,7 +89,7 @@ class DayPlansActivity : AppCompatActivity(), PlansView {
         super.onBackPressed()
     }
 
-    override fun updatePlansList(plans: Array<Plan>) {
+    override fun updatePlansList(plans: List<Plan>) {
         if (!adapterInited) {
             adapter = PlansAdapter(plans, this)
             recyclerView.setHasFixedSize(true)
@@ -72,8 +99,7 @@ class DayPlansActivity : AppCompatActivity(), PlansView {
 
             adapterInited = true
         } else {
-            adapter.plans = plans
-            adapter.notifyDataSetChanged()
+            adapter.updateData(plans)
         }
     }
 

@@ -20,7 +20,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".View.View.Activities.DayPlansActivity" />
-        <activity android:name=".View.View.Activities.AddPlanActivity" />
+        <activity android:name=".View.View.Activities.PlanEditorActivity" />
 
         <service
             android:name=".Controller.Services.DoPlanNotificationSenderService"

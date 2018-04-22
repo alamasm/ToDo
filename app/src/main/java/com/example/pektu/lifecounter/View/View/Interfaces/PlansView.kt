@@ -4,8 +4,9 @@ import com.example.pektu.lifecounter.Model.DayDate
 import com.example.pektu.lifecounter.Model.Plan
 
 interface PlansView {
-    fun updatePlansList(plans: Array<Plan>)
+    fun updatePlansList(plans: List<Plan>)
     fun showAddNewPlanActivity()
+    fun showChangePlanActivity(planDescription: String, planTimeHours: Int, planTimeMinutes: Int)
     var date: DayDate
 
     companion object {

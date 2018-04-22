@@ -1,52 +1,78 @@
 package com.example.pektu.lifecounter.View.View.Adapters
 
-import android.support.v7.widget.CardView
 import android.support.v7.widget.RecyclerView
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.TextView
+import android.view.*
 import com.example.pektu.lifecounter.Controller.ControllerSingleton
 import com.example.pektu.lifecounter.Controller.TimeManager
 import com.example.pektu.lifecounter.Model.Plan
 import com.example.pektu.lifecounter.R
+import com.example.pektu.lifecounter.View.View.Activities.DayPlansActivity
 import com.example.pektu.lifecounter.View.View.Interfaces.PlansView
-class PlansAdapter(var plans: Array<Plan>, private val plansView: PlansView) :
-        RecyclerView.Adapter<PlansAdapter.ViewHolder>() {
+import kotlinx.android.synthetic.main.recycler_view_item.view.*
 
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val planText = view.findViewById<TextView>(R.id.recycler_item_plan_text)
-        val planSpentTimeView = view.findViewById<TextView>(R.id.recycler_view_item_spent_time_text)
-        val cardView = view.findViewById<CardView>(R.id.recycle_item_card_view)
+class PlansAdapter(var plans: List<Plan>, private val plansView: PlansView) :
+        RecyclerView.Adapter<PlansAdapter.ViewHolder>() {
+    lateinit var currentLongClickPlan: Plan
+
+    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view), View.OnCreateContextMenuListener {
         lateinit var plan: Plan
 
+        fun bind(plan: Plan) {
+            itemView.recycler_item_plan_text.text = plan.plan
+            itemView.recycler_view_item_spent_time_text.text = plan.getSpentTimeText()
+            this.plan = plan
+            itemView.setOnClickListener { ControllerSingleton.controller.onPlansViewItemClicked(this, plan, position) }
+            itemView.setOnLongClickListener({ onLongClick() })
+            setItemColor()
+            itemView.setOnCreateContextMenuListener(this)
+
+        }
+
+        private fun onLongClick(): Boolean {
+            currentLongClickPlan = plan
+            itemView.showContextMenu()
+            return true
+        }
+
+        override fun onCreateContextMenu(menu: ContextMenu?, v: View?, menuInfo: ContextMenu.ContextMenuInfo?) {
+            menu!!.add(Menu.NONE, DayPlansActivity.CONTEXT_MENU_CHANGE_BUTTON_ID, 0,
+                    itemView.resources.getString(R.string.plans_view_context_menu_change_button_text))
+            menu.add(Menu.NONE, DayPlansActivity.CONTEXT_MENU_REMOVE_BUTTON_ID, 0,
+                    itemView.resources.getString(R.string.plans_view_contetx_menu_remove_button_text))
+        }
+
+        private fun setItemColor() {
+            val resources = itemView.recycle_item_card_view.resources
+            val cardView = itemView.recycle_item_card_view
+            when {
+                plan.undone -> cardView.setCardBackgroundColor(resources.getColor(R.color.color_undone))
+                plan.moved -> cardView.setCardBackgroundColor(resources.getColor(R.color.color_moved))
+                plan.done -> cardView.setCardBackgroundColor(resources.getColor(R.color.color_done))
+                plan.doing -> cardView.setCardBackgroundColor(resources.getColor(R.color.color_doing))
+                (plan.date == ControllerSingleton.controller.getModel().getCurrentDay() && TimeManager.dayTimeGettingOut()) ->
+                    cardView.setCardBackgroundColor(resources.getColor(R.color.color_not_done))
+                else -> cardView.setCardBackgroundColor(resources.getColor(R.color.color_normal))
+            }
+        }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup,
-                                    viewType: Int): PlansAdapter.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlansAdapter.ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.recycler_view_item, parent, false)
         return ViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.planText.text = plans[position].plan
-        holder.planSpentTimeView.text = plans[position].getSpentTimeText()
-        holder.plan = plans[position]
-        setItemColor(holder)
-
-        holder.itemView.setOnClickListener({ ControllerSingleton.controller.onPlansViewItemClicked(holder, plans[position], position, plansView) })
+    override fun onViewRecycled(holder: ViewHolder?) {
+        holder!!.itemView.setOnLongClickListener(null)
+        super.onViewRecycled(holder)
     }
 
-    private fun setItemColor(holder: ViewHolder) {
-        val resources = holder.cardView.resources
-        when {
-            holder.plan.undone -> holder.cardView.setCardBackgroundColor(resources.getColor(R.color.color_undone))
-            holder.plan.moved -> holder.cardView.setCardBackgroundColor(resources.getColor(R.color.color_moved))
-            holder.plan.done -> holder.cardView.setCardBackgroundColor(resources.getColor(R.color.color_done))
-            holder.plan.doing -> holder.cardView.setCardBackgroundColor(resources.getColor(R.color.color_doing))
-            (holder.plan.date == ControllerSingleton.controller.getModel().getCurrentDay() && TimeManager.dayTimeGettingOut()) ->
-                holder.cardView.setCardBackgroundColor(resources.getColor(R.color.color_not_done))
-        }
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.bind(plans[position])
+    }
+
+    fun updateData(plans: List<Plan>) {
+        this.plans = plans.toMutableList()
+        notifyDataSetChanged()
     }
 
     override fun getItemCount() = plans.size

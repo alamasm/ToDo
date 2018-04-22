@@ -8,4 +8,5 @@
     <color name="color_doing">#ffeb3b</color>
     <color name="color_undone">#8d6e63</color>
     <color name="color_moved">#ff8a80</color>
+    <color name="color_normal">#fafafa</color>
 </resources>

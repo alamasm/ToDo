@@ -38,7 +38,11 @@ class PlansAdapter(var plans: List<Plan>, private val plansView: PlansView) :
             menu!!.add(Menu.NONE, DayPlansActivity.CONTEXT_MENU_CHANGE_BUTTON_ID, 0,
                     itemView.resources.getString(R.string.plans_view_context_menu_change_button_text))
             menu.add(Menu.NONE, DayPlansActivity.CONTEXT_MENU_REMOVE_BUTTON_ID, 0,
-                    itemView.resources.getString(R.string.plans_view_contetx_menu_remove_button_text))
+                    itemView.resources.getString(R.string.plans_view_context_menu_remove_button_text))
+            if (plan.doing) {
+                menu.add(Menu.NONE, DayPlansActivity.CONTEXT_MENU_PAUSE_DOING_BUTTON_ID, 0,
+                        itemView.resources.getString(R.string.plans_view_context_menu_pause_doing_button_text))
+            }
         }
 
         private fun setItemColor() {

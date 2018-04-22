@@ -25,6 +25,7 @@ class DayPlansActivity : AppCompatActivity(), PlansView {
     companion object {
         const val CONTEXT_MENU_CHANGE_BUTTON_ID = 0
         const val CONTEXT_MENU_REMOVE_BUTTON_ID = 1
+        const val CONTEXT_MENU_PAUSE_DOING_BUTTON_ID = 2
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,6 +58,7 @@ class DayPlansActivity : AppCompatActivity(), PlansView {
         when (item.itemId) {
             CONTEXT_MENU_REMOVE_BUTTON_ID -> ControllerSingleton.controller.onRemovePlanContextMenuButtonClicked(adapter.currentLongClickPlan)
             CONTEXT_MENU_CHANGE_BUTTON_ID -> ControllerSingleton.controller.onChangePlanContextMenuButtonClicked(adapter.currentLongClickPlan)
+            CONTEXT_MENU_PAUSE_DOING_BUTTON_ID -> ControllerSingleton.controller.onPauseDoingContextMenuButtonClicked(adapter.currentLongClickPlan)
         }
         return true
     }
@@ -113,8 +115,5 @@ class DayPlansActivity : AppCompatActivity(), PlansView {
             super.onScrolled(recyclerView, dx, dy)
         }
 
-        override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
-            super.onScrollStateChanged(recyclerView, newState)
-        }
     }
 }

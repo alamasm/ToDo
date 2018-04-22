@@ -29,6 +29,7 @@ interface Controller {
     fun onSettingsButtonClick()
     fun onChangePlanContextMenuButtonClicked(plan: Plan)
     fun onRemovePlanContextMenuButtonClicked(plan: Plan)
+    fun onPauseDoingContextMenuButtonClicked(plan: Plan)
     fun onAddPlanViewCreated(planEditorView: PlanEditorView)
     fun onAddPlanViewClosed()
 

@@ -6,7 +6,8 @@ data class Plan(val id: Int, val plan: String, val timeHours: Int, val timeMinut
                 var done: Boolean, val doing: Boolean, val date: DayDate, val spentHours: Int,
                 val spentMinutes: Int, val createDate: Long = Date().time, var startDoingDate: Long = -1L,
                 var lastNotificationTime: Long = -1L, var undone: Boolean = false, var moved: Boolean = false,
-                var newPlanId: Int = -1, var spentTimeBeforeMoving: Int = 0) {
+                var newPlanId: Int = -1, var spentTimeBeforeMoving: Int = 0,
+                var spentTimeBeforePause: Int = 0) {
 
     fun getSpentTimeText(): String {
         var spentHours = ""
@@ -14,16 +15,16 @@ data class Plan(val id: Int, val plan: String, val timeHours: Int, val timeMinut
         var spentMinutes = ""
         var planMinutes = ""
 
-        val spentHoursWithMove = this.spentHours + spentTimeBeforeMoving / 60
-        val spentMinutesWithMove = this.spentMinutes + spentTimeBeforeMoving % 60
+        val spentHoursWithMoveAndPause = this.spentHours + spentTimeBeforeMoving / 60 + spentTimeBeforePause / 60
+        val spentMinutesWithMoveAndPause = this.spentMinutes + spentTimeBeforeMoving % 60 + spentTimeBeforePause % 60
 
-        if (spentHoursWithMove< 10) spentHours = "0"
-        if (spentMinutesWithMove < 10) spentMinutes = "0"
+        if (spentHoursWithMoveAndPause< 10) spentHours = "0"
+        if (spentMinutesWithMoveAndPause < 10) spentMinutes = "0"
         if (this.timeHours < 10) planHours = "0"
         if (this.timeMinutes < 10) planMinutes = "0"
-        spentHours += spentHoursWithMove
+        spentHours += spentHoursWithMoveAndPause
         planHours += this.timeHours
-        spentMinutes += spentMinutesWithMove
+        spentMinutes += spentMinutesWithMoveAndPause
         planMinutes += this.timeMinutes
         return "$spentHours:$spentMinutes/$planHours:$planMinutes"
     }

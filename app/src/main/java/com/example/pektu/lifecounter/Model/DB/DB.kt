@@ -9,13 +9,13 @@ import java.util.*
 
 class DB(private val db: SQLiteDatabase) : DBInterface {
     override fun getPlan(id: Int): Plan {
-        val c = db.query(DBHelper.PLANS_TABLE_NAME, DBHelper.ALL_COLUMNS, "id = ?", listOf(id.toString()).toTypedArray(), null, null, "id")
+        val c = db.query(DBHelper.PLANS_TABLE_NAME, DBHelper.ALL_PLANS_COLUMNS, "id = ?", listOf(id.toString()).toTypedArray(), null, null, "id")
         c.moveToFirst()
         return getPlan(c)
     }
 
     override fun getPlans(date: DayDate): List<Plan> {
-        val c = db.query(DBHelper.PLANS_TABLE_NAME, DBHelper.ALL_COLUMNS, "date LIKE '$date'", null, null, null, "id")
+        val c = db.query(DBHelper.PLANS_TABLE_NAME, DBHelper.ALL_PLANS_COLUMNS, "date LIKE '$date'", null, null, null, "id")
         if (!c.moveToFirst()) return emptyList()
         val plans = ArrayList<Plan>()
         do {
@@ -42,9 +42,10 @@ class DB(private val db: SQLiteDatabase) : DBInterface {
         val moved = c.getInt(c.getColumnIndex("moved")) == 1
         val newPlanId = c.getInt(c.getColumnIndex("new_plan_id"))
         val spentTimeBeforeMove = c.getInt(c.getColumnIndex("spent_time_before_move"))
+        val spentTimeBeforePause = c.getInt(c.getColumnIndex("spent_time_before_pause"))
 
         return Plan(id, plan, hours, minutes, done, doing, date, spentHours, spentMinutes, createDate,
-                startDoingDate, lastNotificationTime, undone, moved, newPlanId, spentTimeBeforeMove)
+                startDoingDate, lastNotificationTime, undone, moved, newPlanId, spentTimeBeforeMove, spentTimeBeforePause)
     }
 
     override fun savePlan(plan: String, hours: Int, minutes: Int, done: Boolean, doing: Boolean,
@@ -127,5 +128,14 @@ class DB(private val db: SQLiteDatabase) : DBInterface {
         contentValues.put("date", date.toString())
         contentValues.put("good", if (good) 1 else 0)
         db.insert(DBHelper.DAYS_RATING_TABLE_NAME, null, contentValues)
+    }
+
+    override fun pausePlan(id: Int, spentTime: Int) {
+        val contentValues = ContentValues()
+        contentValues.put("spent_time_before_pause", spentTime)
+        contentValues.put("doing", 0)
+        contentValues.put("spent_hours", 0)
+        contentValues.put("spent_minutes", 0)
+        db.update(DBHelper.PLANS_TABLE_NAME, contentValues, "id = $id", null)
     }
 }

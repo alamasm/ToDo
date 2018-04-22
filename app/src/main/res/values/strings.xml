@@ -15,5 +15,6 @@
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="plans_view_context_menu_change_button_text">Change</string>
-    <string name="plans_view_contetx_menu_remove_button_text">Remove</string>
+    <string name="plans_view_context_menu_remove_button_text">Remove</string>
+    <string name="plans_view_context_menu_pause_doing_button_text">Pause doing</string>
 </resources>

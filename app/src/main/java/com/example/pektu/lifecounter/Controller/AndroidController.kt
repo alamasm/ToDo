@@ -127,6 +127,11 @@ class AndroidController(private val mainView: MainView, private val model: Model
         plansView.updatePlansList(model.getPlans(plansView.date))
     }
 
+    override fun onPauseDoingContextMenuButtonClicked(plan: Plan) {
+        model.pausePlan(plan)
+        plansView.updatePlansList(model.getPlans(plansView.date))
+    }
+
     override fun onAddPlanViewCreated(planEditorView: PlanEditorView) {
         planEditorOpened = true
         this.planEditorView = planEditorView

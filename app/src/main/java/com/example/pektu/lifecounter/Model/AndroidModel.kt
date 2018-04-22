@@ -180,4 +180,10 @@ class AndroidModel(private val DB: DB, private val preferences: Preferences) : M
     override fun rateDay(date: DayDate, good: Boolean) {
         DB.setDayRating(date, good)
     }
+
+    override fun pausePlan(plan: Plan) {
+        plan.spentTimeBeforePause += plan.spentHours * 60 + plan.spentMinutes
+        DB.pausePlan(plan.id, plan.spentTimeBeforePause)
+        updateBuffer()
+    }
 }

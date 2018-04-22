@@ -27,4 +27,5 @@ interface Model {
     fun getSummaryPlansTimeForDate(date: DayDate): Int
 
     fun rateDay(date: DayDate, good: Boolean)
+    fun pausePlan(plan: Plan)
 }
